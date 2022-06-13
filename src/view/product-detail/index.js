@@ -3,7 +3,7 @@ import {Row, Col} from "reactstrap";
 import { Link } from 'react-router-dom';
 import {AiOutlineStar} from "react-icons/ai";
 import * as Routes from "../../router";
-import * as Images from "../../constant/images";
+import * as Images from "../../constants/images";
 import NavBar from "../../components/Navbar"
 import Footer from '../../components/Footer';
 import './product-detail.scss'

@@ -6,3 +6,8 @@ left the branch and create another new one by doing
 
 delete the old branch name by doing
 "git branch -D main"
+
+
+move branch main to be default
+"git branch -M main"
+git push -u origin main

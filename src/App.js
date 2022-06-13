@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import * as Routes from "./router"
 import Overview from './view/overview';
@@ -6,8 +6,23 @@ import NotFound from "./view/not-found"
 import ShoppingCart from './view/shopping-carts';
 import SignIn from './view/sign-in';
 import ProductDetail from './view/product-detail';
+import SignUp from './view/sign-up';
+import { ToastContainer } from 'react-toastify';
+import {useSelector, useDispatch} from "react-redux"
+import {getAuthUserAction} from "./actions/authActions"
+import {Redirect} from "react-router-dom"
 
 function App() {
+  const {user} = useSelector(state => state.userLogIn)
+  const {user: userInfo} = useSelector(state => state.userInfo)
+  const dispatch= useDispatch()
+
+  useEffect(() =>{
+    if(user && user.uid){
+      dispatch(getAuthUserAction(user.uid))
+    }
+  }, [dispatch, user])
+  
   return (
     <>
       <Router>
@@ -19,16 +34,28 @@ function App() {
             <ShoppingCart />
           </Route>
           <Route path={Routes.SIGN_IN}>
-            <SignIn />
+            {!user && <SignIn />}
+            {user && <Redirect to={Routes.INDEX} />}
           </Route>
           <Route path={`${Routes.PRODUCT}/:id`}>
             <ProductDetail />
+          </Route>
+          <Route path={Routes.SIGN_UP}>
+            {!user && <SignUp />}
+            {user && <Redirect to={Routes.INDEX} />}
+          </Route>
+          <Route path={Routes.PROFILE}>
+            <div>
+              <h1>Profile</h1>
+            </div>
+            {!user && <Redirect to={Routes.INDEX} />}
           </Route>
           <Route path={Routes.NOT_FOUND}>
             <NotFound />
           </Route>
         </Switch>
       </Router>
+      <ToastContainer />
     </>
   );
 }

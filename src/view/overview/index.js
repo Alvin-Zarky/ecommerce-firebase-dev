@@ -1,6 +1,6 @@
 import React from 'react';
 import NavBar from '../../components/Navbar';
-import * as Images from "../../constant/images";
+import * as Images from "../../constants/images";
 import * as Routes from "../../router";
 import {Row, Col} from "reactstrap";
 import {Link} from "react-router-dom";
