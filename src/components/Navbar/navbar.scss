@@ -80,6 +80,43 @@
                 padding-right: 0;
               }
             }
+            .nav-user{
+              margin-top: 9px;
+              color:white;
+              cursor: pointer;
+              margin-left: 10px;
+              text-transform: uppercase;
+              position: relative;
+              svg{
+                margin-right: 0;
+                padding-right: 0;
+              }
+            }
+            .sub-menu{
+              width: 120px;
+              position: absolute;
+              top:60px;
+              right: 50px;
+              background-color: white;
+              border: 1px solid #075c07;
+              a{
+                color:black;
+                text-transform: uppercase;
+                border-bottom: 1px solid #075c07;
+                font-weight: bolder;
+                padding: 10px 13px;
+              }
+              .user-logout{
+                width: 100%;
+                padding: 10px 13px;
+                cursor: pointer;
+                span{
+                  font-size: 15px;
+                  font-weight: bolder;
+                  text-transform: uppercase;
+                }
+              }
+            }
           }
         }
       }

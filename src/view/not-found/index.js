@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col} from "reactstrap";
-import * as Images from "../../constant/images"
+import * as Images from "../../constants/images"
 import "./not-found.scss";
 
 export default function NotFound() {

@@ -1,12 +1,26 @@
-import React from 'react';
-import { Container, Row, Col } from "reactstrap"
+import React, {useState, useEffect} from 'react';
+import { Container, Row, Col} from "reactstrap"
 import { NavLink } from 'react-router-dom';
 import * as Routes from "../../router"
 import {AiOutlineShoppingCart} from "react-icons/ai"
+import { useSelector, useDispatch } from 'react-redux';
+import {authSignOutAction, getAuthUserAction} from "../../actions/authActions"
+import {MdArrowDropDown} from "react-icons/md"
 import {BiUser} from "react-icons/bi"
 import './navbar.scss'
 
 export default function NavBar() {
+
+  const [isDrop, setIsDrop] = useState(false)
+  const {user} = useSelector(state => state.userLogIn)
+  const {user:userInfo} = useSelector(state => state.userInfo)
+  const dispatch= useDispatch()
+
+  const handleSignOut= () =>{
+    dispatch(authSignOutAction())
+    localStorage.removeItem('user')
+  }
+
   return (
     <>
       <Container className='bg-navbar' fluid>
@@ -32,7 +46,25 @@ export default function NavBar() {
                 <nav>
                   <ul>
                     <li><NavLink to={Routes.CART}><AiOutlineShoppingCart /> Cart</NavLink></li>
-                    <li><NavLink to={Routes.SIGN_IN}><BiUser /> Sign in</NavLink></li>
+                    {!user && <li><NavLink to={Routes.SIGN_IN}><BiUser /> Sign in</NavLink></li>}
+                    {user && (
+                        <li>
+                          <div className="nav-user" onClick={() => {setIsDrop(!isDrop ? true : false)}}><BiUser /> {user && user.displayName} <MdArrowDropDown /></div>
+                          <>
+                            {isDrop && (
+                              <div className="sub-menu">
+                                <NavLink to={Routes.PROFILE}>Profile</NavLink>
+                                <div className="user-logout" onClick={handleSignOut}><span>Log out</span></div>
+                            </div>
+                            )}
+                          </>
+                        </li>
+                    )}
+                    {userInfo && userInfo.isAdmin && userInfo.role==="admin" && (
+                      <li>
+                        <div className="nav-user" onClick={() => {setIsDrop(!isDrop ? true : false)}}><BiUser /> Admin <MdArrowDropDown /></div>
+                      </li>
+                    )}
                   </ul>
                 </nav>
               </div>

@@ -13,3 +13,15 @@ body{
   width: 80%;
   margin: auto;
 }
+.box-err-message{
+  width: 100%;
+  background-color: rgb(221, 50, 50);
+  padding: 10px 20px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  span{
+    color:white;
+    font-size: 15px;
+  }
+}

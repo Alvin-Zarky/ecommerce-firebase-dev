@@ -1,11 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import NavBar from "../../components/Navbar"
 import Footer from '../../components/Footer';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {authSignInAction} from "../../actions/authActions"
 import * as Routes from "../../router";
 import './sign-in.scss'
 
 export default function SignIn() {
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword]= useState('')
+  const {message, isError, isLoading} = useSelector(state => state.userLogIn)
+  const dispatch= useDispatch()
+
+  const handleSignIn= (e) =>{
+    e.preventDefault()
+
+    dispatch(authSignInAction(email, password))
+  }
+
   return (
     <>
       <NavBar />
@@ -14,13 +28,13 @@ export default function SignIn() {
           <div className="title-form">
             <span>Sign in</span>
           </div>
-          <form>
+          <form onSubmit={handleSignIn}>
             <div className="input-field">
               <div>
                 <label>Email Address</label>
               </div>
               <div>
-                <input type="email" placeholder='Please input the email' />
+                <input type="email" value={email} onChange={(e) => {setEmail(e.target.value)}} required placeholder='Please input the email' />
               </div>
             </div>
             <div className="input-field">
@@ -28,13 +42,19 @@ export default function SignIn() {
                 <label>Password</label>
               </div>
               <div>
-                <input type="password" placeholder='Please input the password' />
+                <input type="password" value={password} onChange={(e) => {setPassword(e.target.value)}} required placeholder='Please input the password' />
               </div>
             </div>
-            <button>Sign in</button>
+            {isLoading && <button>Signing in...</button>}
+            {!isLoading && <button>Sign in</button>}
             <div className="link-page">
-              <span>New Customer? <Link to={Routes.INDEX}>Sign Up</Link></span>
+              <span>New Customer? <Link to={Routes.SIGN_UP}>Sign Up</Link></span>
             </div>
+            {isError && (
+              <div className="box-err-message">
+                <span>{message}</span>
+              </div>
+            )}
           </form>
         </div>
       </div>
