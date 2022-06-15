@@ -1,17 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Container, Row, Col} from "reactstrap"
 import { NavLink } from 'react-router-dom';
 import * as Routes from "../../router"
 import {AiOutlineShoppingCart} from "react-icons/ai"
+import {MdOutlineAdminPanelSettings} from "react-icons/md"
 import { useSelector, useDispatch } from 'react-redux';
-import {authSignOutAction, getAuthUserAction} from "../../actions/authActions"
+import {authSignOutAction} from "../../actions/authActions"
 import {MdArrowDropDown} from "react-icons/md"
+import {IoMdArrowDropdown} from "react-icons/io"
 import {BiUser} from "react-icons/bi"
 import './navbar.scss'
 
 export default function NavBar() {
 
   const [isDrop, setIsDrop] = useState(false)
+  const [isAdminDrop, setIsAdminDrop]= useState(false)
   const {user} = useSelector(state => state.userLogIn)
   const {user:userInfo} = useSelector(state => state.userInfo)
   const dispatch= useDispatch()
@@ -19,6 +22,18 @@ export default function NavBar() {
   const handleSignOut= () =>{
     dispatch(authSignOutAction())
     localStorage.removeItem('user')
+  }
+  const handleDrop = (role) =>{
+    if(role === "user"){
+      setIsDrop(!isDrop ? true : false)
+      setIsAdminDrop(false)
+      return
+    }
+    if(role === "admin"){
+      setIsAdminDrop(!isAdminDrop ? true : false)
+      setIsDrop(false)
+      return
+    }
   }
 
   return (
@@ -42,29 +57,28 @@ export default function NavBar() {
               </div>
             </Col>
             <Col xl="4" lg="4" md="5" sm="5">
-              <div className="right-navbar">
+            <div className="right-navbar">
                 <nav>
                   <ul>
                     <li><NavLink to={Routes.CART}><AiOutlineShoppingCart /> Cart</NavLink></li>
+                    {user && <li><div className="username" onClick={() => {handleDrop('user')}}><BiUser /> {user && user.displayName} <IoMdArrowDropdown /> 
+                      {isDrop && (
+                        <ul className='sub-menu'>
+                          <li><NavLink to={Routes.PROFILE}>Profile</NavLink></li>
+                          <li onClick={handleSignOut}><div className='logout'>Logout</div></li>
+                        </ul>
+                      )}
+                    </div></li>}
+                    {userInfo && userInfo.isAdmin && userInfo.role==="admin" && <li><div className="username" style={{marginLeft:0}} onClick={() => {handleDrop('admin')}}><MdOutlineAdminPanelSettings /> Admin <IoMdArrowDropdown /> 
+                      {isAdminDrop && (
+                        <ul className='sub-menu'>
+                          <li><NavLink to={Routes.ADMIN_USER}>User</NavLink></li>
+                          <li><NavLink to={Routes.ADMIN_PRODUCT}>Products</NavLink></li>
+                          <li><NavLink to={Routes.ADMIN_ORDER}>Order</NavLink></li>
+                        </ul>
+                      )}
+                    </div></li>}
                     {!user && <li><NavLink to={Routes.SIGN_IN}><BiUser /> Sign in</NavLink></li>}
-                    {user && (
-                        <li>
-                          <div className="nav-user" onClick={() => {setIsDrop(!isDrop ? true : false)}}><BiUser /> {user && user.displayName} <MdArrowDropDown /></div>
-                          <>
-                            {isDrop && (
-                              <div className="sub-menu">
-                                <NavLink to={Routes.PROFILE}>Profile</NavLink>
-                                <div className="user-logout" onClick={handleSignOut}><span>Log out</span></div>
-                            </div>
-                            )}
-                          </>
-                        </li>
-                    )}
-                    {userInfo && userInfo.isAdmin && userInfo.role==="admin" && (
-                      <li>
-                        <div className="nav-user" onClick={() => {setIsDrop(!isDrop ? true : false)}}><BiUser /> Admin <MdArrowDropDown /></div>
-                      </li>
-                    )}
                   </ul>
                 </nav>
               </div>
