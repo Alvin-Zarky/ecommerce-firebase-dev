@@ -19,7 +19,7 @@ const firestore= firebase.firestore()
 const database= firebase.database()
 const auth= firebase.auth()
 const storage= firebase.storage()
-const timestamp= firebase.firestore.Timestamp
+const timestamp= firebase.firestore.FieldValue.serverTimestamp()
 
 export {
   firestore,
