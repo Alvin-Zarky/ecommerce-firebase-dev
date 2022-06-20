@@ -69,7 +69,7 @@ export default function EditProduct() {
     // await imagePath.put(image)
     // const getUrl= await imagePath.getDownloadURL()
     
-    const uploadTask = storage.ref(`/images/${image.name}`).put(image)
+    const uploadTask = storage.ref(`/images/${image.name}-${Date.now()}-${Math.random()}`).put(image)
     //initiates the firebase side uploading 
     uploadTask.on('state_changed', 
     (snapShot) => {

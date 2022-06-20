@@ -8,27 +8,27 @@ import {Row, Col} from "reactstrap"
 import { Link, useParams, useHistory } from 'react-router-dom';
 import {useSelector, useDispatch} from "react-redux"
 import * as Routes from "../../router";
+import Loading from '../../components/Loading';
+import { getOrderAdminAction } from '../../actions/adminActions';
 import '../admin-user/admin-user.scss';
 import './admin-order.scss'
-import Loading from '../../components/Loading';
 
 export default function AdminOrder() {
 
   const [keySearch, setKeySearch] = useState('')
+  const {orders, isLoading, isError, message} = useSelector(state => state.adminOrder)
   const dispatch= useDispatch()
   const history = useHistory()
   const {search, page} = useParams()
 
-  // useEffect(() =>{
-  //   dispatch(getDataOrders({search, page}))
-
-  //   return () => dispatch(reset())
-  // }, [dispatch, page, search])
+  useEffect(() =>{
+    dispatch(getOrderAdminAction())
+  }, [dispatch])
 
   const handleSearch = (e) =>{
     e.preventDefault()
   }
-
+  
   return (
     <>
       <NavBar />
@@ -64,30 +64,33 @@ export default function AdminOrder() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                  <td>1</td>
-                  <td>Alvin</td>
-                  <td>2022-03-13</td>
-                  <td>$ 23.44</td>
-                  <td>$ 322.33</td>
-                  <td><ImCross className="cross-icon" /></td>
-                  {/* <td>{!val.isDeliver ? <ImCross className="cross-icon" /> : <TiTick className="tick-icon" />}</td> */}
+              {orders && orders.map((val, ind) =>(
+                <tr key={ind}>
+                  <td>{val.id}</td>
+                  <td>{val.userName}</td>
+                  <td>{new Date(val.createdAt).toLocaleString('en-US')}</td>
+                  <td>$ {val.totalPrices}</td>
+                  <td>{val.isPaid ? new Date(val.paidAt).toLocaleString('en-US') : `Not Paid`}</td>
+                  <td>{!val.isDelivered ? <ImCross className="cross-icon" /> : <TiTick className="tick-icon" />}</td>
                   <td>
-                    <button className="btn-detail">Details</button>
+                    <Link to={`${Routes.ADMIN_ORDER_DETAIL}/${val.id}`}>
+                      <button className="btn-detail">Details</button>
+                    </Link>
                   </td>
                 </tr>
+              ))}
             </tbody>
           </Table>
-            {/* {isLoading && (
-              <div className="loading" style={{marginTop:"-30px"}}>
+            {isLoading && (
+              <div className="loading" style={{marginTop:"20px"}}>
                 <Loading />
               </div>
-            )} */}
-          {/* <>
-            <div className="pagination-padd">
-              <Pagination isLoading={isLoading} isError={isError} pagination={pagination} keyword={search} pages={allPages} pageNumber={pageNumber} ROUTE={Routes.ORDER_LIST}  />
-            </div>
-          </> */}
+            )}
+            {isError && (
+              <div className="box-message">
+                <span>{message}</span>
+              </div>
+            )}
         </div>
       <Footer />
     </>

@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import NavBar from "../../components/Navbar"
 import Footer from "../../components/Footer"
 import {TiTick} from "react-icons/ti"
 import {FiEdit} from "react-icons/fi"
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Routes from "../../router"
 import {MdDeleteOutline} from "react-icons/md"
@@ -16,9 +16,11 @@ import { ADMIN_GET_USER_CLEAR } from '../../constants/adminConstants';
 import './admin-user.scss'
 
 export default function AdminUser() {
-  
+
+  const [keyword, setKeyword] = useState('')
   const { users, isLoading } = useSelector(state => state.adminUsers)
   const dispatch= useDispatch()
+  const history= useHistory()
 
   useEffect(() =>{
     dispatch(getUsersAdminAction())
@@ -34,6 +36,16 @@ export default function AdminUser() {
     }
   }
 
+  const handleSearch = (e) =>{
+    e.preventDefault()
+
+    if(keyword.trim()){
+      history.push(`${Routes.ADMIN_USER_SEARCH}/${keyword}`)
+    }else{
+      history.push(Routes.ADMIN_USER)
+    }
+  }
+
   return (
     <>
       <NavBar />
@@ -45,10 +57,10 @@ export default function AdminUser() {
               </div>
             </Col>
             <Col xl="6" lg="6" md="6">
-              <form>
+              <form onSubmit={handleSearch}>
                 <div className="input-search">
                   <div className="input-type">
-                    <input type="text" required spellCheck="false" />
+                    <input type="text" onChange={(e) => {setKeyword(e.target.value)}} value={keyword} spellCheck="false" />
                   </div>
                   <div className="btn-search">
                     <button>Search</button>

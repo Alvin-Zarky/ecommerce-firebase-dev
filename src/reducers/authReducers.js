@@ -11,6 +11,17 @@ import {
   GET_AUTH_USER_REQUEST,
   GET_AUTH_USER_SUCCESS,
   GET_AUTH_USER_FAIL,
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAIL,
+  UPDATE_PROFILE_CLEAR,
+  FORGET_PASSWORD_REQUEST,
+  FORGET_PASSWORD_SUCCESS,
+  FORGET_PASSWORD_FAIL,
+  GET_USER_ORDER_REQUEST,
+  GET_USER_ORDER_SUCCESS,
+  GET_USER_ORDER_FAIL,
+  FORGET_PASSWORD_CLEAR,
   
 } from '../constants/authConstants'
 
@@ -68,6 +79,49 @@ export const getAuthUserReducer = (state= {user: null}, action) =>{
     case GET_AUTH_USER_SUCCESS:
       return { isLoading:false, user: action.payload, isSuccess:true }
     case GET_AUTH_USER_FAIL:
+      return { isLoading:false, isError:true, message: action.payload }
+    default:
+      return state
+  }
+}
+
+export const updateProfileReducer = (state= {user: null}, action) =>{
+  switch(action.type){
+    case UPDATE_PROFILE_REQUEST:
+      return { isLoading:true }
+    case UPDATE_PROFILE_SUCCESS:
+      return { isLoading:false, isSuccess:true }
+    case UPDATE_PROFILE_FAIL:
+      return { isLoading:false, isSuccess:false, isError:true, message: action.payload }
+    case UPDATE_PROFILE_CLEAR:
+      return { isSuccess:false, isError:false, message: `` }
+    default:
+      return state
+  }
+}
+
+export const forgetPasswordReducer= (state = { isLoading:false, isSuccess:false }, action) =>{
+  switch(action.type){
+    case FORGET_PASSWORD_REQUEST:
+      return { isLoading:true }
+    case FORGET_PASSWORD_SUCCESS:
+      return { isLoading:false, isSuccess:true }
+    case FORGET_PASSWORD_FAIL:
+      return { isLoading:false, isSuccess:false, isError:true, message:action.payload }
+    case FORGET_PASSWORD_CLEAR:
+      return { isSuccess:false, isError:false, message: null }
+    default:
+      return state;
+  }
+}
+
+export const getUserOrderReducer= (state = {userOrder: [], isLoading:false}, action) =>{
+  switch(action.type){
+    case GET_USER_ORDER_REQUEST:
+      return { isLoading:true }
+    case GET_USER_ORDER_SUCCESS:
+      return { isLoading:false, userOrder: action.payload }
+    case GET_USER_ORDER_FAIL:
       return { isLoading:false, isError:true, message: action.payload }
     default:
       return state

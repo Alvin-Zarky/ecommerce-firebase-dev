@@ -78,7 +78,12 @@ export default function SignUp() {
             </div>
             {isLoading ? <button>Signing up...</button> : <button>Sign up</button>}
             <div className="link-page">
-              <span>New Customer? <Link to={Routes.SIGN_IN}>Sign in</Link></span>
+              <span>New Customer? <Link to={Routes.SIGN_IN}>Sign In</Link></span>
+            </div>
+            <div className="forget-password">
+              <Link to={Routes.FORGET_PASSWORD}>
+                <span>Forget password</span>
+              </Link>
             </div>
             {isError && (
               <div className='box-err-message'><span>{message}</span></div>

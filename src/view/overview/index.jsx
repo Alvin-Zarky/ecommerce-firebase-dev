@@ -1,18 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import NavBar from '../../components/Navbar';
-import * as Images from "../../constants/images";
 import * as Routes from "../../router";
 import {Row, Col} from "reactstrap";
 import {Link} from "react-router-dom";
 import Slider from 'react-slick';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
-import {AiOutlineStar} from "react-icons/ai";
 import Footer from '../../components/Footer';
 import Loading from "../../components/Loading"
+import ReactPaginate from 'react-paginate'
 import './overview.scss'
 import { getProductListAction, getProductSlideAction } from '../../actions/productAction';
+import Rating from '../../components/Rating';
 
 export default function Overview() {
+
+  // const [currentItems, setCurrentItems] = useState(null);
+  // const [pageCount, setPageCount] = useState(0);
+  // const [itemOffset, setItemOffset] = useState(0);
+  // const itemsPerPage= 1
 
   const {products, isLoading} = useSelector(state => state.products)
   const { products: productSlides } = useSelector(state => state.productSlides)
@@ -33,7 +38,19 @@ export default function Overview() {
     if(!productSlides || productSlides.length===0){
       dispatch(getProductSlideAction())
     }
+
   }, [dispatch, products, productSlides])
+
+  // useEffect(() => {
+  //   const endOffset = itemOffset + itemsPerPage;
+  //   setCurrentItems(products.slice(itemOffset, endOffset));
+  //   setPageCount(Math.ceil(products.length / itemsPerPage));
+  // }, [itemOffset, itemsPerPage, products]);
+
+  // const handlePageClick = (event) => {
+  //   const newOffset = (event.selected * itemsPerPage) % products.length;
+  //   setItemOffset(newOffset);
+  // };
 
   return (
     <>
@@ -74,9 +91,7 @@ export default function Overview() {
                     </div>
                     <div className="detail-product">
                       <h5>{val.name.substring(0, 25)}{val.name.length > 25 ? `...` : ``}</h5>
-                      <p>
-                        <AiOutlineStar /> <AiOutlineStar /> <AiOutlineStar /> <AiOutlineStar /> <AiOutlineStar /> <span>2 Reviews</span>
-                      </p>
+                      <Rating numRating={val.numRating} review={val.numReviews} />
                       <span>$ {val.price}</span>
                     </div>
                   </div>
@@ -85,6 +100,15 @@ export default function Overview() {
             ))}
           </Row>
         </div>
+        {/* <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={5}
+              pageCount={pageCount}
+              previousLabel="< previous"
+              renderOnZeroPageCount={null}
+            /> */}
       </div>
       <Footer />
     </>

@@ -23,12 +23,20 @@ import {
   ADMIN_GET_USER_DETAIL_FAIL,
   ADMIN_GET_USER_DETAIL_REQUEST,
   ADMIN_GET_USER_DETAIL_SUCCESS,
+  ADMIN_MARK_DELIVERED_FAIL,
+  ADMIN_MARK_DELIVERED_REQUEST,
+  ADMIN_MARK_DELIVERED_SUCCESS,
+  ADMIN_ORDER_FAIL,
+  ADMIN_ORDER_REQUEST,
+  ADMIN_ORDER_SUCCESS,
+  ADMIN_SEARCH_USER_FAIL,
+  ADMIN_SEARCH_USER_REQUEST,
+  ADMIN_SEARCH_USER_SUCCESS,
   ADMIN_USER_FAIL,
   ADMIN_USER_REQUEST, 
   ADMIN_USER_SUCCESS 
 } from "../constants/adminConstants"
 import {firestore, timestamp} from "../config/firebase"
-import { storage } from "../config/firebase"
 
 export const getUsersAdminAction= () => async (dispatch, getState) =>{
   try{
@@ -95,10 +103,11 @@ export const addProductAdminAction = (data) => async(dispatch, getState) =>{
     const objData={
       ...data,
       reviews:[],
-      numReviews:Number(0.0),
-      numRating:Number(0.0),
+      numReviews:Number(0),
+      numRating:Number(0),
       createdAt: timestamp
     }
+    
     await firestore.collection('products').add(objData)
     return dispatch({ type: ADMIN_ADD_PRODUCT_SUCCESS, payload: objData })
   }catch(err){
@@ -171,5 +180,70 @@ export const deleteProductAdminAction = (id) => async(dispatch, getState) =>{
     })
   }catch(err){
     dispatch({ type: ADMIN_DELETE_PRODUCT_FAIL, payload: err.message })
+  }
+}
+
+export const getOrderAdminAction = () => async(dispatch, getState) =>{
+  try{
+    dispatch({ type: ADMIN_ORDER_REQUEST })
+    
+    firestore.collection('orders').orderBy("createdAt", "desc").onSnapshot(snapshot =>{
+      if(!snapshot.empty){
+        const data=[]
+        snapshot.docs.forEach(val =>{
+          data.push({
+            ...val.data(),
+            id: val.id
+          })
+        })
+        dispatch({ type: ADMIN_ORDER_SUCCESS, payload: data })
+      }else{
+        dispatch({ type: ADMIN_ORDER_FAIL, payload: `Data order not found...!` })
+      }
+    })
+  }catch(err){
+    dispatch({ type: ADMIN_ORDER_FAIL, payload: err.message })
+  }
+}
+
+export const markOrderAdminAction = (id) => async(dispatch, getState) =>{
+  try{
+    dispatch({ type: ADMIN_MARK_DELIVERED_REQUEST })
+    const data={
+      isDelivered:true,
+      deliveredAt: Date.now()
+    }
+    return await firestore.collection('orders').doc(id).update(data).then(() =>{
+      dispatch({ type: ADMIN_MARK_DELIVERED_SUCCESS })
+    })
+  }catch(err){
+    dispatch({ type: ADMIN_MARK_DELIVERED_FAIL, payload: err.message })
+  }
+}
+
+export const adminSearchAction = (keyword) => async(dispatch, getState) =>{
+  try{
+    dispatch({ type: ADMIN_SEARCH_USER_REQUEST })
+    firestore
+      .collection('users')
+      .orderBy('displayName')
+      .where(`displayName`, ">=", keyword.charAt(0).toUpperCase() + keyword.slice(1))
+      .where("displayName", "<=", keyword.charAt(0).toUpperCase() + keyword.slice(1) + "\uf8ff")
+      .onSnapshot(snapshot =>{
+        if(!snapshot.empty){
+          const data=[]
+          snapshot.docs.forEach(val =>{
+            data.push({
+              ...val.data(),
+              id: val.id
+            })
+          })
+          dispatch({ type: ADMIN_SEARCH_USER_SUCCESS, payload: data })
+        }else{
+          dispatch({ type: ADMIN_SEARCH_USER_FAIL, payload:`No users found...!` })
+        }
+      })
+  }catch(err){
+    dispatch({ type: ADMIN_SEARCH_USER_FAIL, payload: err.message })
   }
 }
