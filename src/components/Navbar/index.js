@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Container, Row, Col} from "reactstrap"
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import * as Routes from "../../router"
 import {AiOutlineShoppingCart} from "react-icons/ai"
 import {MdOutlineAdminPanelSettings} from "react-icons/md"
@@ -13,15 +13,18 @@ import './navbar.scss'
 
 export default function NavBar() {
 
+  const [keyword, setKeyword] = useState('')
   const [isDrop, setIsDrop] = useState(false)
   const [isAdminDrop, setIsAdminDrop]= useState(false)
   const {user} = useSelector(state => state.userLogIn)
   const {user:userInfo} = useSelector(state => state.userInfo)
   const dispatch= useDispatch()
+  const history= useHistory()
 
   const handleSignOut= () =>{
     dispatch(authSignOutAction())
     localStorage.removeItem('user')
+    localStorage.removeItem('carts')
   }
   const handleDrop = (role) =>{
     if(role === "user"){
@@ -36,6 +39,16 @@ export default function NavBar() {
     }
   }
 
+  const handleSearch = (e) =>{
+    e.preventDefault()
+
+    if(keyword.trim()){
+      history.push(`${Routes.SEARCH}/${keyword}`)
+    }else{
+      history.push(Routes.INDEX)
+    }
+  }
+
   return (
     <>
       <Container className='bg-navbar' fluid>
@@ -46,9 +59,9 @@ export default function NavBar() {
                 <div className="title-navbar">
                   <NavLink exact to={Routes.INDEX}><h3>proshop</h3></NavLink>
                 </div>
-                <form>
+                <form onSubmit={handleSearch}>
                   <div className="box-search">
-                    <input type="text" placeholder='Search products...' />
+                    <input type="text" value={keyword} onChange={(e) => {setKeyword(e.target.value)}} placeholder='Search products...' />
                     <button className="btn-search">
                       <span>Search</span>
                     </button>

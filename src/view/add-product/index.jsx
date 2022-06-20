@@ -60,7 +60,7 @@ export default function AddProduct() {
     // await imagePath.put(image)
     // const getUrl= await imagePath.getDownloadURL()
     
-    const uploadTask = storage.ref(`/images/${image.name}`).put(image)
+    const uploadTask = storage.ref(`/images/${image.name}-${Date.now()}-${Math.random()}`).put(image)
     //initiates the firebase side uploading 
     uploadTask.on('state_changed', 
     (snapShot) => {
@@ -75,12 +75,12 @@ export default function AddProduct() {
     }, () => {
       // gets the functions from storage refences the image storage in firebase by the children
       // gets the download url then sets the image from firebase as the value for the imgUrl key:
-      storage.ref('images').child(image.name).getDownloadURL()
+      storage.ref('images').child(`${image.name}`).getDownloadURL()
        .then(fireBaseUrl => {
         setIsPending(false)
         setIsBlur(false)
         setErrMsg('')
-        setImage(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
+        setImage(prevObject => ({...prevObject, imgUrl: `${fireBaseUrl}`}))
        })
     })
   }

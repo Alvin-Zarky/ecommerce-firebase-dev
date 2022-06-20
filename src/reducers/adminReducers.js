@@ -22,6 +22,15 @@ import {
   ADMIN_GET_USER_DETAIL_FAIL,
   ADMIN_GET_USER_DETAIL_REQUEST,
   ADMIN_GET_USER_DETAIL_SUCCESS,
+  ADMIN_MARK_DELIVERED_FAIL,
+  ADMIN_MARK_DELIVERED_REQUEST,
+  ADMIN_MARK_DELIVERED_SUCCESS,
+  ADMIN_ORDER_FAIL,
+  ADMIN_ORDER_REQUEST,
+  ADMIN_ORDER_SUCCESS,
+  ADMIN_SEARCH_USER_FAIL,
+  ADMIN_SEARCH_USER_REQUEST,
+  ADMIN_SEARCH_USER_SUCCESS,
   ADMIN_USER_CLEAR,
   ADMIN_USER_FAIL, 
   ADMIN_USER_REQUEST, 
@@ -126,6 +135,45 @@ export const adminEditProductReducer= (state = { isLoading:false, isSuccess:fals
       return { isLoading:false, isError:true, isSuccess:false, message: action.payload }
     case ADMIN_EDIT_PRODUCT_CLEAR:
       return { isLoading:false, isSuccess:false }
+    default:
+      return state
+  }
+}
+
+export const adminGetOrderReducer = (state = {orders:[], isLoading:false}, action) =>{
+  switch(action.type){
+    case ADMIN_ORDER_REQUEST:
+      return { isLoading:true }
+    case ADMIN_ORDER_SUCCESS:
+      return { isLoading:false, orders: action.payload }
+    case ADMIN_ORDER_FAIL:
+      return { isLoading:false, isError:true, message: action.payload }
+    default:
+      return state
+  }
+}
+
+export const adminMarkDeliverReducer = (state ={ isLoading:false, isSuccess:false }, action) =>{
+  switch(action.type){
+    case ADMIN_MARK_DELIVERED_REQUEST:
+      return { isLoading:true }
+    case ADMIN_MARK_DELIVERED_SUCCESS:
+      return { isLoading:false, isSuccess:true }
+    case ADMIN_MARK_DELIVERED_FAIL:
+      return { isLoading:false, isSuccess:false }
+    default:
+      return state
+  }
+}
+
+export const adminSearchReducer= (state = { users:[], products:[], orders:[], isLoading:false }, action) =>{
+  switch(action.type){
+    case ADMIN_SEARCH_USER_REQUEST:
+      return { isLoading:true }
+    case ADMIN_SEARCH_USER_SUCCESS:
+      return  { isLoading:false, users: action.payload }
+    case ADMIN_SEARCH_USER_FAIL:
+      return  { isLoading:false, isError:true, message: action.payload }
     default:
       return state
   }
